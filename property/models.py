@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class Flat(models.Model):
@@ -22,7 +23,15 @@ class Flat(models.Model):
     has_balcony = models.NullBooleanField("Наличие балкона", db_index=True)
     active = models.BooleanField("Активно-ли объявление", db_index=True)
     construction_year = models.IntegerField("Год постройки здания", null=True, blank=True, db_index=True)
+    liked_by = models.ManyToManyField(User, related_name='liked_flats', verbose_name="Кто лайкнул")
 
 
     def __str__(self):
         return f"{self.town}, {self.address} ({self.price}р.)"
+
+
+class Сomplaint(models.Model):
+    user = models.ForeignKey(User, verbose_name="Кто жаловался", on_delete=models.CASCADE)
+    flat = models.ForeignKey(Flat, verbose_name="Квартира, на которую жаловались", on_delete=models.CASCADE)
+    text = models.TextField(verbose_name="Текст жалобы")
+

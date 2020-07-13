@@ -11,6 +11,9 @@ def normalize_phonenumbers(apps, schema_editor):
             flat.owner_phone_pure = phonenumbers.format_number(parsed_dirty_phonenumber, phonenumbers.PhoneNumberFormat.E164)
             flat.save()
 
+def move_backward(apps, schema_editor):
+    pass
+
 
 class Migration(migrations.Migration):
 
@@ -19,5 +22,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(normalize_phonenumbers),
+        migrations.RunPython(normalize_phonenumbers, move_backward),
     ]

@@ -1,11 +1,13 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Flat(models.Model):
     owner = models.CharField("ФИО владельца", max_length=200)
     owners_phonenumber = models.CharField("Номер владельца", max_length=20)
+    owner_phone_pure = PhoneNumberField(blank=True, verbose_name="Нормализованный номер владельца")
     new_building = models.NullBooleanField(db_index=True)
     created_at = models.DateTimeField("Когда создано объявление", default=timezone.now, db_index=True)
     
@@ -23,7 +25,7 @@ class Flat(models.Model):
     has_balcony = models.NullBooleanField("Наличие балкона", db_index=True)
     active = models.BooleanField("Активно-ли объявление", db_index=True)
     construction_year = models.IntegerField("Год постройки здания", null=True, blank=True, db_index=True)
-    liked_by = models.ManyToManyField(User, related_name='liked_flats', verbose_name="Кто лайкнул")
+    liked_by = models.ManyToManyField(User, related_name='liked_flats', verbose_name="Кто лайкнул", blank=True)
 
 
     def __str__(self):

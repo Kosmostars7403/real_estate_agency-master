@@ -5,7 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Flat(models.Model):
-    new_building = models.NullBooleanField(db_index=True)
+    new_building = models.NullBooleanField(verbose_name="Новостройка", db_index=True)
     created_at = models.DateTimeField("Когда создано объявление", default=timezone.now, db_index=True)
     
     description = models.TextField("Текст объявления", blank=True)
@@ -31,15 +31,15 @@ class Flat(models.Model):
 
 
 class Сomplaint(models.Model):
-    user = models.ForeignKey(User, verbose_name="Кто жаловался", on_delete=models.CASCADE)
-    flat = models.ForeignKey(Flat, verbose_name="Квартира, на которую жаловались", on_delete=models.CASCADE)
+    complainer = models.ForeignKey(User, related_name='user_complaints', verbose_name="Кто жаловался", on_delete=models.CASCADE)
+    flat = models.ForeignKey(Flat, related_name='flat_complaints', verbose_name="Квартира, на которую жаловались", on_delete=models.CASCADE)
     text = models.TextField(verbose_name="Текст жалобы")
 
 class Owner(models.Model):
     full_name = models.CharField("ФИО владельца", max_length=200, db_index=True)
     phonenumber = models.CharField("Номер владельца", max_length=20, db_index=True)
     phone_pure = PhoneNumberField(blank=True, verbose_name="Нормализованный номер владельца", db_index=True)
-    own_flats = models.ManyToManyField(Flat, related_name="flat_owners", verbose_name="Квартиры в собственности")
+    own_flats = models.ManyToManyField(Flat, related_name="flat_owners", verbose_name="Квартиры в собственности", blank=True)
 
     def __str__(self):
         return self.full_name
